@@ -1,4 +1,5 @@
-import { verify } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
+const { verify } = jwt;
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
