@@ -180,3 +180,31 @@ export const verifyEmail = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+
+// Check if user is authenticated
+export const isAuthenticated = async (req, res) => {
+  try {
+    return res.json({ success: true });
+  } catch (error) {
+    res.json({ success: false, message: error });
+  }
+};
+
+//Send Password Reset OTP
+export const sendResetOtp = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.json({ success: false, message: "Email is required" });
+  }
+
+  try {
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+      return res.json({ success: false, message: "User not found" });
+    }
+  } catch (error) {
+    return res.json({ success: false, message: error.message });
+  }
+};
