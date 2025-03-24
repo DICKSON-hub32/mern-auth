@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
+import transporter from "../config/nodemailer.js";
 
 // Update the register function in server/controllers/authController.js:
 export const register = async (req, res) => {
@@ -39,6 +40,16 @@ export const register = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000 // 7
     });
 
+    // Sendin welcome email
+    const mailOptions = {
+      from: process.env.SENDER_EMAIL,
+      to: email,
+      subject: "Welcome to Teckish",
+      text: `Welcome to Teckish, ${name}. We are glad to have you on board. Your account has been successfully created with email id: ${email}.`
+    };
+
+    await transporter.sendMail(mailOptions);
+
     return res.json({ success: true });
   } catch (error) {
     res.json({ success: false, message: error.message });
@@ -60,7 +71,7 @@ export const login = async (req, res) => {
     const user = await userModel.findOne({ email });
 
     if (!user) {
-      return res.json({ success: false, message: "Invalid credentials" });
+      return res.json({ success: false, message: "Invalid email" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -85,7 +96,6 @@ export const login = async (req, res) => {
     return res.json({ success: false, message: error.message });
   }
 };
-
 
 // Update the logout function in server/controllers/authController.js:
 export const logout = async (req, res) => {
