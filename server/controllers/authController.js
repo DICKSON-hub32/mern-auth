@@ -49,6 +49,7 @@ export const register = async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
+    console.log(`Welcome email sent to ${email}`);
 
     return res.json({ success: true });
   } catch (error) {
